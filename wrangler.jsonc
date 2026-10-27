@@ -1,0 +1,25 @@
+{
+  "name": "alfred",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "build": { "command": "npm run build:ui" },
+  "ai": { "binding": "AI" },
+  // TODO: configure Cloudflare Access
+  "vars": { "TEAM_DOMAIN": "", "POLICY_AUD": "", "TEAM_MEMBERS": "" },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "SESSION", "class_name": "ChatSession" },
+      { "name": "LIBRARY", "class_name": "IncidentLibrary" }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ChatSession", "IncidentLibrary"] }],
+  "workflows": [
+    { "name": "resolve-incident-workflow", "binding": "RESOLVE", "class_name": "ResolveWorkflow" }
+  ]
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alfred</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  html { color-scheme: light dark; }
+  .entry p { white-space: pre-line; }
+  body {
+    background: var(--colorNeutralBackground2, #fafafa);
+    color: var(--colorNeutralForeground1, #242424);
+    font-family: var(--fontFamilyBase, system-ui, sans-serif);
+    font-size: var(--fontSizeBase300, 14px);
+    display: flex; flex-direction: column;
+  }
+  header { display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: var(--colorNeutralBackground1, #fff); border-bottom: 1px solid var(--colorNeutralStroke2, #e0e0e0); }
+  header h1 { font-size: var(--fontSizeBase500, 20px); font-weight: var(--fontWeightSemibold, 600); margin: 0; }
+  section { flex: 1; min-height: 0; width: 100%; max-width: 860px; margin: 0 auto; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; }
+  section[hidden] { display: none; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field > * { width: 100%; }
+  fluent-text-input { max-width: none; }
+  fluent-textarea::part(root) { width: 100%; }
+  fluent-textarea::part(control) { resize: vertical; min-height: 80px; }
+  #mic { font-size: 20px; }
+  .intake { padding: 12px 16px; border-radius: var(--borderRadiusLarge, 6px); background: var(--colorNeutralBackground1, #fff); border: 1px solid var(--colorNeutralStroke2, #e0e0e0); display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
+  .intake dt { color: var(--colorNeutralForeground3, #616161); }
+  .intake dd { margin: 0; white-space: pre-wrap; }
+  .bar { display: flex; align-items: center; gap: 12px; }
+  .bar h2 { margin: 0 auto 0 0; font-size: var(--fontSizeBase400, 16px); }
+  #log { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .msg { max-width: 85%; padding: 8px 12px; border-radius: var(--borderRadiusLarge, 6px); background: var(--colorNeutralBackground1, #fff); border: 1px solid var(--colorNeutralStroke2, #e0e0e0); white-space: pre-wrap; }
+  .msg.user { align-self: flex-end; background: var(--colorBrandBackground2, #ebf3fc); }
+  .card { padding: 12px 16px; border-radius: var(--borderRadiusLarge, 6px); background: var(--colorNeutralBackground1, #fff); border: 1px solid var(--colorNeutralStroke2, #e0e0e0); }
+  .card p { margin: 6px 0; }
+  .muted { color: var(--colorNeutralForeground3, #616161); }
+  #composer { display: flex; gap: 8px; align-items: center; }
+  #composer[hidden] { display: none; }
+  #input { flex: 1; }
+  #banner { padding: 0 16px; max-width: 860px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+  #banner:empty { display: none; }
+  .entry { padding: 8px 0; }
+  #secondaries { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  #secondaries label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Alfred</h1>
+  <fluent-tablist id="nav" activeid="t-incident">
+    <fluent-tab id="t-incident">Incident</fluent-tab>
+    <fluent-tab id="t-library">Library</fluent-tab>
+  </fluent-tablist>
+</header>
+<div id="banner"></div>
+
+<section id="view-intake" hidden>
+  <div class="bar"><h2>Report an incident</h2></div>
+  <div class="field">
+    <fluent-label for="f-title">Title</fluent-label>
+    <fluent-text-input id="f-title" placeholder="e.g. Checkout latency spike"></fluent-text-input>
+  </div>
+  <div class="field">
+    <fluent-label for="f-alarms">Activated alarms / indicators</fluent-label>
+    <fluent-textarea id="f-alarms" rows="4" placeholder="One per line: alarm name, dashboard reading, error rate…"></fluent-textarea>
+  </div>
+  <div class="field">
+    <fluent-label for="f-notes">Your notes</fluent-label>
+    <fluent-textarea id="f-notes" rows="4" placeholder="What changed recently? What have you already tried?"></fluent-textarea>
+  </div>
+  <div class="field" id="secondaries-field" hidden>
+    <fluent-label>Add secondaries</fluent-label>
+    <div id="secondaries"></div>
+  </div>
+  <div><fluent-button id="start" appearance="primary">Start incident</fluent-button></div>
+</section>
+
+<section id="view-chat" hidden>
+  <div class="bar">
+    <h2 id="title"></h2>
+    <fluent-badge id="status" appearance="filled"></fluent-badge>
+    <fluent-button id="resolve" appearance="primary">Mark resolved</fluent-button>
+    <fluent-button id="new">New incident</fluent-button>
+  </div>
+  <div id="log"></div>
+  <div id="composer">
+    <fluent-button id="mic" appearance="subtle" title="Voice input">🎤</fluent-button>
+    <fluent-text-input id="input" placeholder="Reply to Alfred…"></fluent-text-input>
+    <fluent-button id="send" appearance="primary">Send</fluent-button>
+  </div>
+</section>
+
+<section id="view-library" hidden>
+  <div class="bar"><h2>Resolved incidents</h2></div>
+  <div id="library-list"></div>
+</section>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>
